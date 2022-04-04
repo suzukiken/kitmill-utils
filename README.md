@@ -1,4 +1,4 @@
 Utility software for my Original Mind Kitmill
 
-* Alminium Surface flattener
- 
+* Surface flattener G-code Generator BS200 Alminium Base
+* Stencil Gerber Generator

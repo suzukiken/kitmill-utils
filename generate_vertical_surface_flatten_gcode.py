@@ -4,8 +4,8 @@ from datetime import datetime
 
 code = ''
 linenum = 100
-x_max_mm = 154.000
-y_max_mm = 204.000
+x_max_mm = 152.000
+y_max_mm = 202.000
 x_step = 1.3
 z_mm = 0.05
 f_mm = 200

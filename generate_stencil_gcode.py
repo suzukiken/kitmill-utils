@@ -11,8 +11,10 @@ rdic = {}
 places = {}
 current_placement_rid = ''
 
-x_max = 0
-y_max = 0
+x_max = 92000000
+y_max = -108000000
+
+z_depth = 0.25
 
 header = '''(Header)
 G21G61G90
@@ -82,27 +84,24 @@ with open('32u2_module-F_Paste.gbr', 'r') as f:
             current_placement_rid = ''
 
 
-def line(x_start, y_start, x_end, y_end):
+def line(x_start, y_start, x_end, y_end, z_depth):
     code = 'G00 Z1.000\n'
     code += f'G00 X{x_start:.3f} Y{y_start:.3f}\n'
-    code += 'G01 Z-0.150 F100.000\n'
+    code += f'G01 Z-{z_depth:.3f} F100.000\n'
     code += f'G01 X{x_end:.3f} Y{y_end:.3f} F300.000\n'
     return code
 
 
-def rect(x_start, y_start, x_end, y_end):
+def rect(x_start, y_start, x_end, y_end, z_depth):
     code = 'G00 Z1.000\n'
     code += f'G00 X{x_start:.3f} Y{y_start:.3f}\n'
-    code += 'G01 Z-0.150 F100.000\n'
+    code += f'G01 Z-{z_depth:.3f} F100.000\n'
     code += f'G01 X{x_end:.3f} Y{y_start:.3f} F300.000\n'
     code += f'G01 X{x_end:.3f} Y{y_end:.3f} F300.000\n'
     code += f'G01 X{x_start:.3f} Y{y_end:.3f} F300.000\n'
     code += f'G01 X{x_start:.3f} Y{y_start:.3f} F300.000\n'
     return code
 
-
-x_max = 90000000
-y_max = -90000000
 
 for rid in places:
     for place in places[rid]:
@@ -115,7 +114,7 @@ for rid in places:
             y_start = y_posi - rdic[rid]['y'] / 2
             x_end = x_posi + rdic[rid]['x'] / 2
             y_end = y_posi + rdic[rid]['y'] / 2
-            code += rect(x_start, y_start, x_end, y_end)
+            code += rect(x_start, y_start, x_end, y_end, z_depth)
         else:
             if 0 < rdic[rid]['x']:
                 x_start = x_posi - rdic[rid]['x'] / 2
@@ -129,7 +128,7 @@ for rid in places:
             else:
                 y_start = y_posi
                 y_end = y_posi
-            code += line(x_start, y_start, x_end, y_end)
+            code += line(x_start, y_start, x_end, y_end, z_depth)
 
 code += footer
 

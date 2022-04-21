@@ -5,7 +5,7 @@ from decimal import Decimal
 
 x_max = 145
 y_max = 102
-z_cut_depth = 0.25
+z_cut_depth = 2
 z_move_height = 10
 tool_width = 2.0
 feed_depth = 0.05

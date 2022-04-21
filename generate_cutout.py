@@ -4,7 +4,7 @@ import re
 from decimal import Decimal
 
 x_max = 145
-y_max = 10.2
+y_max = 102
 z_cut_depth = 0.25
 z_move_height = 10
 tool_width = 2.0

@@ -3,14 +3,14 @@
 import re
 from decimal import Decimal
 
-x_min = 20.0
+x_min = 30.0
 x_max = 40.0
-y_min = 20.0
+y_min = 30.0
 y_max = 40.0
 z_cut_depth = 2.0
 z_move_height = 10.0
 z_start_move_height = 10.0
-feed_depth = 0.05
+feed_depth = 0.1
 
 header = f'''(Header)
 G21G61G90
@@ -55,8 +55,8 @@ while current_depth <= z_cut_depth:
 	code += f'G01 X{x_min:.3f} Y{y_min:.3f} F300.000\n'
 	current_depth += feed_depth
 
-line_interval_length = 10.0
-line_length = 20.0
+line_interval_length = 5.0
+line_length = 30.0
 line_num = 3
 
 for i in range(line_num):

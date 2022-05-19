@@ -8,12 +8,11 @@ y_max = 100.0
 z_cut_depth = 1.6
 z_move_height = 1.0
 z_start_move_height = 10.0
-tool_width = 1.0
+tool_width = 3.0
 current_depth = 0.0
 copper_feed_depth = 0.1
 normal_feed_depth = 0.2
 tab_width = 0.5
-double_side = False
 copper_depth = 0.035
 
 header = f'''(Header)
@@ -67,20 +66,11 @@ while True:
 # middle
 
 while True:
-	if z_cut_depth < current_depth + normal_feed_depth:
+	if z_cut_depth < current_depth:
 		break
 	current_depth += normal_feed_depth
 	dig(current_depth)
 	cut()
-
-
-# copper
-while True:
-	current_depth += copper_feed_depth
-	dig(current_depth)
-	cut()
-	if z_cut_depth < current_depth + copper_feed_depth:
-		break
 		
 
 code += footer

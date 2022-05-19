@@ -20,13 +20,14 @@ code += header
 
 line_interval_length = 0.8
 line_length = 5.0
-line_num = 10
+line_num = 20
 
 for i in range(line_num):
-    x_start = line_interval_length * i
-    x_end = line_interval_length * i
-    y_start = 0
-    y_end = line_length
+    x_start = 0
+    x_end = line_length
+    y_start = line_interval_length * i
+    y_end = line_interval_length * i
+
     code += 'G00 Z1.000\n'
     code += f'G00 X{x_start:.3f} Y{y_start:.3f}\n'
     code += 'G01 Z-0.150 F100.000\n'

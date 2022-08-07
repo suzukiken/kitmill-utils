@@ -3,8 +3,8 @@
 import re
 from decimal import Decimal
 
-y_max = 115.0
-z_max = 8.0
+y_max = 90.0
+z_max = 3.30
 z_move_height = 1.0
 z_start_move_height = 10.0
 feed_depth = 0.2

@@ -86,13 +86,13 @@ def rect(width, height, radius, depth, tab_width, tool_width, adjustment):
 	rad_plus = radius + adjustment
 	offset = tool_width / 2
 	codes.append(corner(270, 180, rad_minus, rad_minus, radius, tool_width))
-	codes.append(tab(width / 2 + radius - adjustment, - offset - adjustment, 0, depth, tab_width))
+	codes.append(tab(width / 2 - offset - adjustment, - offset - adjustment, 0, depth, tab_width))
 	codes.append(corner(180, 90, width - rad_plus, rad_minus, radius, tool_width))
-	codes.append(tab(width + offset - adjustment, height / 2 + radius - adjustment, 90, depth, tab_width))
+	codes.append(tab(width + offset - adjustment, height / 2 - offset - adjustment, 90, depth, tab_width))
 	codes.append(corner(90, 0, width - rad_plus, height - rad_plus, radius, tool_width))
-	codes.append(tab(width / 2 + radius - adjustment, height + offset - adjustment, 180, depth, tab_width))
+	codes.append(tab(width / 2 - offset - adjustment, height + offset - adjustment, 180, depth, tab_width))
 	codes.append(corner(360, 270, rad_minus, height - rad_plus, radius, tool_width))
-	codes.append(tab(- offset - adjustment, height / 2 + radius - adjustment, 270, depth, tab_width))
+	codes.append(tab(- offset - adjustment, height / 2 - offset - adjustment, 270, depth, tab_width))
 	codes.append(position(- tool_width / 2 - adjustment, rad_minus))
 	return '\n'.join(codes)
 	

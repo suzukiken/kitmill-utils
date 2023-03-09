@@ -128,5 +128,5 @@ def generate(width, height, radius=1.6, tool_width=0.8, depth=1.8, tab_width=1.0
 	return code
 
 
-print(generate(102.5, 56))
+
 

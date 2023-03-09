@@ -2,49 +2,35 @@
 
 import re
 from decimal import Decimal
+import sys
 
 pattern = re.compile(r".*X([-0-9.]+) Y([-0-9.]+).*")
-x_offset_mm = 0.4
-y_offset_mm = 0.4
-newlines_front = []
-newlines_bottom = []
 
-with open('front.ncd', 'r') as f:
-    for line in f.readlines():
-        mat = pattern.match(line)
-        if mat:
-            org_x = mat.group(1)
-            org_y = mat.group(2)
-            dec_new_x = Decimal(org_x) + Decimal(x_offset_mm)
-            dec_new_y = Decimal(org_y) + Decimal(y_offset_mm)
-            new_x = f'{dec_new_x:.3f}'
-            new_y = f'{dec_new_y:.3f}'
-            print(org_x, org_y, new_x, new_y)
-            newline = line.replace(org_x, new_x).replace(org_y, new_y)
-            newlines_front.append(newline)
-        else:
-            print(line)
-            newlines_front.append(line)
+def process_file(filepath, offset_x, offset_y):
+    newlines = []
+    with open(filepath, 'r') as f:
+        for line in f.readlines():
+            line = line.strip()
+            mat = pattern.match(line)
+            if mat:
+                org_x = mat.group(1)
+                org_y = mat.group(2)
+                dec_new_x = Decimal(org_x) + Decimal(offset_x)
+                dec_new_y = Decimal(org_y) + Decimal(offset_y)
+                new_x = f'{dec_new_x:.3f}'
+                new_y = f'{dec_new_y:.3f}'
+                newline = line.replace(f'X{org_x}', f'X{new_x}').replace(f'Y{org_y}', f'Y{new_y}')
+                newlines.append(newline)
+            else:
+                newlines.append(line)
+    return newlines
 
-with open('front_offset.ncd', 'w') as f:
-    f.writelines(newlines_front)
+def main():
+    filepath = sys.argv[1]
+    offset_x = sys.argv[2]
+    offset_y = sys.argv[3]
+    lines = process_file(filepath, offset_x, offset_y)
+    print('\n'.join(lines))
 
-with open('bottom.ncd', 'r') as f:
-    for line in f.readlines():
-        mat = pattern.match(line)
-        if mat:
-            org_x = mat.group(1)
-            org_y = mat.group(2)
-            dec_new_x = Decimal(org_x) + Decimal(x_offset_mm)
-            dec_new_y = Decimal(org_y) + Decimal(y_offset_mm)
-            new_x = f'{dec_new_x:.3f}'
-            new_y = f'{dec_new_y:.3f}'
-            print(org_x, org_y, new_x, new_y)
-            newline = line.replace(org_x, new_x).replace(org_y, new_y)
-            newlines_bottom.append(newline)
-        else:
-            print(line)
-            newlines_bottom.append(line)
-
-with open('bottom_offset.ncd', 'w') as f:
-    f.writelines(newlines_bottom)
+if __name__ == '__main__':
+    main()

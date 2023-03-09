@@ -2,57 +2,6 @@ import math
 from decimal import Decimal, setcontext, getcontext, Context, ROUND_HALF_EVEN, ROUND_HALF_DOWN
 from string import Template
 
-'''
-G21
-G90
-G94
-G00 Z1.0000
-M03
-G4 P1
-G00 X0.0000Y2.0000
-G01 Z-0.2000
-G01 X0.1743Y1.9924
-....
-G01 X-0.1743Y1.9924
-G00 X-0.1743Y1.9924
-G00 Z1.0000
-G00 X0Y0
-M05
-'''
-
-'''
-G21
-G61
-G90
-G00 Z1.000
-G00 X0.000 Y00.000
-M03
-
-G01 Z-0.150 F100.000
-G01 X5.910 Y11.229 F300.000
-X6.317 Y11.199
-X6.716 Y11.290
-G00 Z1.000
-G00 X11.561 Y14.173
-G01 Z-0.150 F100.000
-G01 X11.880 Y13.919 F300.000
-X12.260 Y13.769
-'''
-
-header = [
-	"G21",
-	"G61",
-	"G90",
-	"G00 Z1.0000",
-	"G00 X0.0000 Y00.0000",
-	"M03",
-	"G4 P1",
-]
-
-footer = [
-	"M05",
-]
-
 # 上に戻る
 def go_up(z_posi):
 	fz_posi = (Decimal(z_posi)).quantize(Decimal('.0001'), rounding=ROUND_HALF_EVEN)
@@ -96,8 +45,7 @@ def move_round(feed_deg, start_x, start_y, radius, tool_width, feed_rate, curren
 	return codes
 
 def generate(radius, center_x, center_y, tool_width, depth, feed_depth, ver_feed_rate, holi_feed_rate, feed_deg):
-	codes = header
-
+	codes = []
 	# 穴全体を、輪郭だけでなく、あけるために、必要なら径を変えて周回する。その径の配列
 	actions = []
 
@@ -160,17 +108,5 @@ def generate(radius, center_x, center_y, tool_width, depth, feed_depth, ver_feed
 			codes.append(go_up(1))
 
 	codes.append(move_to(0, 0))
-	codes += footer
 	return "\n".join(codes)
-
-
-code = generate(radius=2.5, center_x=0, center_y=0, tool_width=0.8, depth=1.8, feed_depth=0.2, ver_feed_rate=100, holi_feed_rate=300, feed_deg=3)
-print(code)
-
-# radius=2.5 is just for 5mm aluminium bar
-# マイクロ超硬エンドミル 刃径2mmシャンク径3.175mm刃長8mm
-# マイクロ超硬エンドミル 刃径3mmシャンク径3.175mm刃長9.5mm
-# マイクロ超硬エンドミル 刃径1mmシャンク径3.175mm刃長6mm
-# 土佐昌典VC 刃径0.8mm刃長3.5mm
-# 土佐昌典FT 刃径0.5mm刃長2mm
 

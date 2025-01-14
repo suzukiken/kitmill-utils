@@ -2,55 +2,20 @@ import math
 from decimal import Decimal, setcontext, getcontext, Context, ROUND_HALF_EVEN, ROUND_HALF_DOWN
 from string import Template
 
-'''
-G21
-G90
-M03
-G4 P1
-G00 X0.0000Y2.0000
-G01 Z-0.2000
-G01 X0.1743Y1.9924
-....
-G01 X-0.1743Y1.9924
-G00 X-0.1743Y1.9924
-G00 Z1.0000
-G00 X0Y0
-M05
-'''
-
-'''
-G21
-G61
-G90
-G00 Z1.000
-G00 X0.000 Y00.000
-M03
-G4 P1
-
-G01 Z-0.150 F100.000
-G01 X5.910 Y11.229 F300.000
-X6.317 Y11.199
-X6.716 Y11.290
-G00 Z1.000
-G00 X11.561 Y14.173
-G01 Z-0.150 F100.000
-G01 X11.880 Y13.919 F300.000
-X12.260 Y13.769
-'''
-
 header = [
-	"G21",
-	"G61",
-	"G90",
-	"G94 F300",
-	"G00 Z1.0000",
-	"G00 X0.0000 Y00.0000",
-	"M03",
-	"G4 P1",
+    "G21",
+    "G90",
+    "G94 F500",
+    "G00 Z1.0000",
+    "G00 X0.0000 Y00.0000",
+    "M03",
+    "G4 P1",
 ]
 
 footer = [
-	"M05",
+    "G00 Z1.0000",
+    "G00 X0.0000 Y00.0000",
+    "M05",
 ]
 
 # 上に戻る
@@ -77,25 +42,18 @@ def move_to(x_posi, y_posi, feed_rate=None, follow=False):
 	else:
 		return f'G00 X{fx_posi} Y{fy_posi}'
 
-# 円を描く
-def move_round(feed_deg, start_x, start_y, radius, tool_width, feed_rate, current_depth, ver_feed_rate):
-	codes = []
-	for deg in range(0, 360, feed_deg):
-		sinval = math.sin(math.radians(deg))
-		sindec = (Decimal(sinval) * Decimal(radius - tool_width / 2) + Decimal(start_x)).quantize(Decimal('.0001'), rounding=ROUND_HALF_EVEN)
-		cosval = math.cos(math.radians(deg))
-		cosdec = (Decimal(cosval) * Decimal(radius - tool_width / 2) + Decimal(start_y)).quantize(Decimal('.0001'), rounding=ROUND_HALF_EVEN)
-		if deg == 0:
-			# 開始点
-			codes.append(move_to(sindec, cosdec, feed_rate))
-			# 掘る
-			codes.append(go_down(current_depth, ver_feed_rate))
-			codes.append(move_to(sindec, cosdec, feed_rate))
-		else:
-			codes.append(move_to(sindec, cosdec, feed_rate, True))
-	return codes
+# 円を描くv2
+def generate_circle(diameter, left_x, bottom_y, dest_depth, tool_width, h_feed, v_feed):
+    lines = []
+    radius = diameter / 2 - tool_width / 2
+    start_x = left_x - radius
+    start_y = bottom_y
+    lines.append(f'G00 X{start_x:.3f} Y{start_y:.3f}')
+    lines.append(f'G01 Z{dest_depth:.3f} F{v_feed}')
+    lines.append(f'G02 X{start_x:.3f} Y{start_y:.3f} I{radius:.3f} J0.000 F{h_feed}')
+    return lines
 
-def generate(radius, center_x, center_y, tool_width, depth, feed_depth, ver_feed_rate, holi_feed_rate, feed_deg, padding_rate):
+def generate(radius, center_x, center_y, tool_width, depth, feed_depth, ver_feed_rate, holi_feed_rate, padding_rate):
 	codes = header
 
 	# 穴全体を、輪郭だけでなく、あけるために、必要なら径を変えて周回する。その径の配列
@@ -149,7 +107,15 @@ def generate(radius, center_x, center_y, tool_width, depth, feed_depth, ver_feed
 			f_depth = Decimal(feed_depth).quantize(Decimal('.0001'), rounding=ROUND_HALF_EVEN)
 			while True:
 				# 円を描く
-				codes += move_round(feed_deg, center_x, center_y, action['radius'], tool_width, holi_feed_rate, current_depth, ver_feed_rate)
+				codes += generate_circle(
+					diameter=action['radius'] * 2, 
+					left_x=center_x, 
+					bottom_y=center_y, 
+					dest_depth=current_depth, 
+					tool_width=tool_width, 
+					h_feed=holi_feed_rate, 
+					v_feed=ver_feed_rate
+				)
 				if current_depth < - depth:
 					break
 				# もう１段深くする
@@ -176,7 +142,6 @@ code = generate(
 	feed_depth=0.5, 
 	ver_feed_rate=100, 
 	holi_feed_rate=500, 
-	feed_deg=6,
 	padding_rate=1
 )
 

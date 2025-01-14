@@ -29,6 +29,7 @@ def merge_content(file_paths):
                 striped = line.strip()
                 if striped == 'G4 P1':
                     picking = True
+                    lines.append("G00 Z1.0000")
                 elif striped == 'M05':
                     picking = False
                 elif picking:

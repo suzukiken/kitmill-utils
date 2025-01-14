@@ -1,0 +1,1 @@
+math.tan(math.radians(26.5)) * 2 * 0.3

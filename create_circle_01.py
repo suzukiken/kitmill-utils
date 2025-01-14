@@ -3,20 +3,20 @@ from decimal import Decimal, setcontext, getcontext, Context, ROUND_HALF_EVEN, R
 from string import Template
 
 header_codes = [
-    '(Header)',
-    'G21G61G90',
-    'G00Z5.000',
-    'G00X0.000Y00.000',
-    'M03',
-    'G00Z1.000',
+    "G21",
+    "G61",
+    "G90",
+    "G94 F300",
+    "G00 Z1.0000",
+    "G00 X0.0000 Y00.0000",
+    "M03",
+    "G4 P1",
 ]
 
 footer_codes = [
-    '(Footer)',
-    'G61',
-    'G00Z5.000',
-    'G00X0.000Y00.000',
-    'M30'
+    "G00 Z1.0000",
+    "G00 X0.0000 Y00.0000",
+    "M05",
 ]
 
 
@@ -48,7 +48,7 @@ def generate_circle(diameter, left_x, bottom_y, dest_depth, tool_width, h_feed, 
     start_x = left_x + radius + tool_width / 2 # center_x - diameter / 2 + tool_width / 2
     start_y = bottom_y + radius + tool_width / 2
     lines += move_round(feed_deg, start_x, start_y, radius, tool_width, h_feed, v_feed, dest_depth)
-    lines.append('G00 Z1.000')
+    # lines.append('G00 Z1.000')
     return lines
 
 
@@ -58,7 +58,7 @@ dest_depth = - Decimal(0.15)
 tool_width = Decimal(0.8)
 h_step = tool_width / 2
 diameter = Decimal(2.0) # 直径
-feed_deg = 10
+feed_deg = 3
 
 h_feed = Decimal(300)
 v_feed = Decimal(100)
